@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIIR • Perspectives</title>
+<style>
+  body{margin:0;background:#0b0b0b;color:#eaeaea;font-family:system-ui,Segoe UI,Roboto,Arial}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 24px}
+  .slide{display:none; animation:fade 1s ease}
+  blockquote{font-size:22px; line-height:1.35; margin:0 0 10px}
+  cite{font-size:14px; color:#aaa}
+  @keyframes fade{from{opacity:.2; transform:translateY(6px)} to{opacity:1; transform:none}}
+</style>
+<div class="wrap">
+  <div class="slide">
+    <blockquote>“Functions like a shared mirror… restoring the dynamics of interpersonal exchange.”</blockquote>
+    <cite>— Karl Friston, theoretical discussion of an early framework (June 4, 2024)</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“Foregrounding the dynamic, interactive aspect of an exchange that is conversational in nature.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“A shared narrative, a shared generative model.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“One way to see this is as a way to federate belief updating… so each can contribute to and draw from a shared understanding.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“The more I think about it, the more feasible that is with current technology.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>Suggested use “where the dynamics of the interaction are the focus… such as therapeutic dialogue, group work, or debating societies.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“Surface what’s going on… render more apparent who is dominating, where it’s going, the volatility of the subject matter.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“Like a musical score… capturing the dynamics of an exchange so its tempo and themes are visible.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“The only real point of contact between your craft and my craft… something projected into a shared space where all can see it.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+  <div class="slide">
+    <blockquote>“With current large language models, you could certainly leverage developments to provide the right kind of mirror.”</blockquote>
+    <cite>— Karl Friston</cite>
+  </div>
+</div>
+<script>
+let i=0; const slides=[...document.querySelectorAll('.slide')];
+function show(){ slides.forEach(s=>s.style.display='none'); slides[i].style.display='block'; i=(i+1)%slides.length; }
+show(); setInterval(show,6000);
+</script>
+</html>
