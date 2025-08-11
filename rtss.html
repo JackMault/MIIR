@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIIR • RTSS Demo</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,Arial; margin:0; background:#0a0a0a; color:#eee}
+  .wrap{max-width:1000px; margin:0 auto; padding:28px}
+  h1{font-weight:600; letter-spacing:.2px; font-size:20px; margin:0 0 16px}
+  .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:22px}
+  .card{background:#111; border:1px solid #222; border-radius:16px; padding:18px}
+  .pill{display:inline-block; padding:10px 12px; border-radius:999px; border:1px solid #333; margin:6px 6px 0 0; cursor:pointer}
+  .pill.active{background:#1a1a1a; border-color:#4ad; box-shadow:0 0 0 2px rgba(64,160,255,.25) inset}
+  .chart{position:relative; aspect-ratio:1/1; background:radial-gradient(circle at center,#0f0f0f 0,#0b0b0b 60%,#0a0a0a 100%); border-radius:16px; border:1px solid #222}
+  .ring{position:absolute; inset:8%}
+  .ring div{position:absolute; inset:0; border:1px dashed #333; border-radius:50%}
+  .ring div:nth-child(2){inset:18%} .ring div:nth-child(3){inset:36%} .ring div:nth-child(4){inset:54%} .ring div:nth-child(5){inset:72%}
+  .dot{position:absolute; width:12px; height:12px; background:#4ad; border-radius:50%; transform:translate(-50%,-50%); transition: all .6s cubic-bezier(.2,.8,.2,1)}
+  .legend{font-size:12px; color:#aaa; margin-top:10px}
+  .btn{margin-top:14px; background:#fff; color:#000; border:none; padding:10px 14px; border-radius:10px; cursor:pointer}
+  .btn:disabled{opacity:.35; cursor:not-allowed}
+  @media (max-width:850px){ .grid{grid-template-columns:1fr; } }
+</style>
+<div class="wrap">
+  <h1>Try it: pick the identity statements that feel most true <span style="color:#888">(tap 3–5)</span></h1>
+  <div class="grid">
+    <div class="card">
+      <div id="pills"></div>
+      <button id="refine" class="btn" disabled>Refine →</button>
+      <div class="legend">This demo shows how MIIR narrows scattered identities into a clearer, higher‑confidence set.</div>
+    </div>
+    <div class="card">
+      <div class="chart">
+        <div class="ring">
+          <div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <div id="dots"></div>
+      </div>
+      <div class="legend">Outer rings ≈ higher confidence / nearer‑term embodiment.</div>
+    </div>
+  </div>
+</div>
+<script>
+const statements = [
+  "I am a leader","I am a builder","I am scattered","I am a peacemaker","I am overwhelmed",
+  "I am exacting","I am a teacher","I am a risk‑taker","I am an artist","I am avoidant"
+];
+const pills = document.getElementById('pills');
+const dots = document.getElementById('dots');
+const refine = document.getElementById('refine');
+
+let chosen = new Set();
+let firstState = [];
+let refined = [];
+
+function rand(min,max){return Math.random()*(max-min)+min}
+function polarToXY(r,theta){const cx=50, cy=50; return {x:cx + r*Math.cos(theta), y:cy + r*Math.sin(theta)}}
+
+function renderDots(arr){
+  dots.innerHTML = "";
+  arr.forEach(pt=>{
+    const d = document.createElement('div');
+    d.className='dot';
+    d.style.left = pt.x + '%';
+    d.style.top  = pt.y + '%';
+    dots.appendChild(d);
+  });
+}
+
+function seedFirst(){
+  firstState = statements.map((_,i)=>{
+    const r = rand(15,45);
+    const t = rand(0,Math.PI*2);
+    const p = polarToXY(r,t);
+    return {x:p.x, y:p.y, key:i};
+  });
+  renderDots(firstState);
+}
+
+function computeRefined(){
+  refined = firstState.map(pt=>{
+    const isChosen = chosen.has(pt.key);
+    const angle = Math.atan2(pt.y-50, pt.x-50);
+    const radius = Math.hypot(pt.x-50, pt.y-50);
+    const targetR = isChosen ? Math.min(radius+12, 46) : Math.max(radius-6, 18);
+    const jitter = isChosen ? rand(-2,2) : rand(-1.2,1.2);
+    const to = polarToXY(targetR + jitter, angle + rand(-0.08,0.08));
+    return {x:to.x, y:to.y, key:pt.key};
+  });
+}
+
+function renderPills(){
+  pills.innerHTML="";
+  statements.forEach((s,i)=>{
+    const el=document.createElement('span');
+    el.className = 'pill' + (chosen.has(i)?' active':'');
+    el.textContent = s;
+    el.onclick=()=>{
+      if(chosen.has(i)) chosen.delete(i); else chosen.add(i);
+      el.classList.toggle('active');
+      refine.disabled = chosen.size<3;
+    };
+    pills.appendChild(el);
+  });
+}
+
+refine.onclick=()=>{
+  computeRefined();
+  renderDots(refined);
+  refine.textContent = "This is your Round‑2 clarity";
+  refine.disabled = true;
+};
+
+renderPills();
+seedFirst();
+</script>
+</html>
